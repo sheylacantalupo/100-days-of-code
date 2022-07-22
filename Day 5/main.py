@@ -30,7 +30,7 @@ while len(posicoesAleatorias) != len(senha):
   if r not in posicoesAleatorias: #add se não existir na lista
 
     posicoesAleatorias.append(r)
-#print(posicoesAleatorias)
+# print(posicoesAleatorias)
 senhaFinal = []
 for x in range(0 , len(senha)):
   senhaFinal.append(senha[posicoesAleatorias[x]])

@@ -28,9 +28,8 @@ class States(Turtle):
             self.guessed_states.append(answer)
 
     def states_to_learn(self):
-        for state in self.states_list:
-            if state not in self.guessed_states:
-                self.states_learn.append(state)
+
+        self.states_learn = [state for state in self.states_list if state not in self.guessed_states]
         print(self.states_learn)
         new_data = pandas.DataFrame(self.states_learn)
         new_data.to_csv("states_to_learn.csv")

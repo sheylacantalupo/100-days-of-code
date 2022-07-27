@@ -18,5 +18,4 @@ while len(state.guessed_states) < 50:
         state.states_to_learn()
         break
 
-
 screen.exitonclick()

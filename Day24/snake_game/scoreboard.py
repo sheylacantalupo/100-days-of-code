@@ -7,7 +7,6 @@ current = int(data.read())
 
 
 class ScoreBoard(Turtle):
-
     def __init__(self):
         super().__init__()
         self.score = 0

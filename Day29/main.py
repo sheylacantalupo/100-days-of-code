@@ -4,13 +4,16 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 from random import choice, randint, shuffle
+import json
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 import pyperclip as pyperclip
 
 
 def gerador_senha():
 
-    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+               'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'
+        , 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
@@ -30,25 +33,42 @@ def gerador_senha():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def salvar():
+    # obtendo os dados que o usuário inseriu no entry
     dados_website = website.get()
     dados_email = email.get()
     dados_senha = senha_entry.get()
 
-    # messagebox.showinfo(title="title", message="mensagem")
+    # criando a nova dict a partir dos dados inseridos, que será armazenado no json
+    novo_dado = {
+        dados_website: {
+            "email": dados_email,
+            "password": dados_senha
+        }
+    }
 
-    if website.get() == "" or senha_entry.get() == "":
-        messagebox.showinfo(title="Atenção!", message="inserir dados");
+    # verificando se as entradas são válidas
+    if len(dados_website) == 0 or len(dados_senha) == 0:
+        messagebox.showinfo(title="Atenção!", message="inserir dados")
 
     else:
-        is_ok = messagebox.askokcancel(title=dados_website, message=f"Estes são os dados inseridos: \n{dados_website} \n"
-                                                                    f"Senha: {dados_senha}\n\n OK para salvar ")
-        if is_ok:
-            with open("dados.txt", "a") as data:
-                data.write(f"\n {dados_website} | {dados_email} | {dados_senha} ")
-                website.delete(0, END)
-                senha_entry.delete(0, END)
-
-
+        try:
+            with open("dados.json", "r") as data_file:
+                # Reading old data
+                data = json.load(data_file)
+        except FileNotFoundError:
+            # Se o arquivo json não existir, vai criar e adicionar os novos dados inseridos
+            with open("dados.json", "w") as data_file:
+                json.dump(novo_dado, data_file, indent=4)
+        else:
+            # Updating old data with new data
+            data.update(novo_dado)
+            with open("dados.json", "w") as data_file:
+                # Saving updated data
+                json.dump(data, data_file, indent=4)
+        finally:
+            # Limpando os campos de entrada após serem salvos
+            website.delete(0, END)
+            senha_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -60,7 +80,6 @@ canvas = Canvas(height=200, width=200)
 logo_img = PhotoImage(file="logo.png")
 canvas.create_image(100, 100, image=logo_img)
 canvas.grid(row=0, column=1)
-
 
 
 website_label = tkinter.Label(text="Website:")

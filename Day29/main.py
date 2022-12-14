@@ -70,6 +70,21 @@ def salvar():
             website.delete(0, END)
             senha_entry.delete(0, END)
 
+def buscar_senha():
+    dados_website = website.get()
+    try:
+        with open("dados.json") as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showinfo(title="Erro", message="arquivo Não encontrado.")
+    else:
+        if dados_website in data:
+            email = data[dados_website]["email"]
+            password = data[dados_website]["password"]
+            messagebox.showinfo(title=dados_website, message=f"Email :{email}\nPassword: {password}")
+        else:
+            messagebox.showinfo(title="OPS!", message=f"Nenhum login foi salvo referente a {dados_website}")
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -90,20 +105,24 @@ senha_label = tkinter.Label(text="Senha:")
 senha_label.grid(column=0, row=3)
 
 # Entries
-website = Entry(width=45)
-website.grid(row=1, column=1, columnspan=2)
+website = Entry(width=21)
+website.grid(row=1, column=1)
 website.focus()
-email = Entry(width=45)
+email = Entry(width=35)
 email.grid(row=2, column=1, columnspan=2)
 email.insert(0, "sheylacantalupo.sc@gmail.com")
-senha_entry = Entry(width=31)
+senha_entry = Entry(width=21)
 senha_entry.grid(row=3, column=1)
 
 # botões
 botao_gerador = Button(text="Gerar Senha", command=gerador_senha)
 botao_gerador.grid(row=3, column=2)
+
 botao_salvar = Button(text="Salvar", width=36, command=salvar)
 botao_salvar.grid(row=4, column=1, columnspan=2)
+
+botao_search = Button(text="Pesquisar", width=13, command=buscar_senha)
+botao_search.grid(row=1, column=2)
 
 window.mainloop()
 
